@@ -3,11 +3,13 @@ import { expect, test } from '@playwright/test';
 test('keeps the shared workspace usable at phone, tablet, and desktop widths', async ({
   page,
 }) => {
-  await page.goto('/');
+  await page.goto('/dashboard');
 
   for (const width of [375, 768, 1280]) {
     await page.setViewportSize({ width, height: 900 });
-    await expect(page.getByRole('heading', { name: 'Overview' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Welcome back/ }),
+    ).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
@@ -17,22 +19,63 @@ test('keeps the shared workspace usable at phone, tablet, and desktop widths', a
     expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
 
     if (width <= 820) {
-      await expect(page.getByRole('button', { name: 'Menu' })).toHaveCount(0);
-      await expect(page.locator('.mobile-menu summary')).toBeVisible();
+      await expect(
+        page.getByRole('button', { name: 'Open navigation menu' }),
+      ).toBeVisible();
     } else {
-      await expect(page.locator('.sidebar')).toBeVisible();
+      await expect(
+        page.getByRole('navigation', { name: 'Primary navigation' }),
+      ).toBeVisible();
     }
   }
 });
 
 test('opens mobile navigation and follows a route', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto('/');
-  await page.locator('.mobile-menu summary').click();
-  await page.getByRole('link', { name: 'Roadmap', exact: true }).click();
+  await page.goto('/dashboard');
+  await page.getByRole('button', { name: 'Open navigation menu' }).click();
+  await page
+    .getByRole('dialog', { name: 'Navigation menu' })
+    .getByRole('link', { name: /Analyze/ })
+    .click();
 
-  await expect(page).toHaveURL(/\/roadmap$/);
-  await expect(page.getByRole('heading', { name: 'Roadmap' })).toBeVisible();
+  await expect(page).toHaveURL(/\/analyze/);
+  await expect(
+    page.getByRole('heading', { name: /Turn Your Offer Into/ }),
+  ).toBeVisible();
+});
+
+test('keeps integrated section layouts within phone, tablet, and desktop widths', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  const routes = [
+    '/analyze',
+    '/prospects',
+    '/campaigns',
+    '/workspace',
+    '/reports',
+    '/agents',
+    '/settings',
+    '/members',
+    '/billing',
+    '/audit-logs',
+  ];
+
+  for (const route of routes) {
+    await page.goto(route);
+    for (const width of [375, 768, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      const dimensions = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        content: document.documentElement.scrollWidth,
+      }));
+      expect(
+        dimensions.content,
+        `${route} should not overflow at ${width}px`,
+      ).toBeLessThanOrEqual(dimensions.viewport);
+    }
+  }
 });
 
 test('serves a complete VANGUARD web manifest and icon set', async ({
@@ -47,8 +90,8 @@ test('serves a complete VANGUARD web manifest and icon set', async ({
     short_name: 'VANGUARD',
     start_url: '/',
     display: 'standalone',
-    theme_color: '#1b6c80',
-    background_color: '#f9fbfc',
+    theme_color: '#0D0E11',
+    background_color: '#0D0E11',
   });
 
   for (const icon of [

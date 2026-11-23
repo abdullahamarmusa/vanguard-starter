@@ -1,0 +1,341 @@
+import type {
+  ActivityEvent,
+  DateRangePreset,
+  IndustryDistributionItem,
+  KpiMetric,
+  PerformancePoint,
+  TaskItem,
+} from '@/types/vanguard';
+
+export const ILLUSTRATIVE_DASHBOARD_KPIS: KpiMetric[] = [
+  {
+    id: 'total-prospects',
+    title: 'Total Prospects',
+    value: '2,847',
+    numericValue: 2847,
+    changePercent: 18,
+    trend: 'up',
+    accent: 'blue',
+    sparkline: [24, 32, 29, 44, 41, 56, 62, 74],
+    href: '/prospects',
+    formulaTooltip:
+      'Illustrative count of discovered organizations across analyses in the selected period (compared to prior period).',
+  },
+  {
+    id: 'qualified-leads',
+    title: 'Qualified Leads',
+    value: '742',
+    numericValue: 742,
+    changePercent: 32,
+    trend: 'up',
+    accent: 'teal',
+    sparkline: [18, 22, 28, 35, 33, 47, 52, 68],
+    href: '/prospects?minMatch=80',
+    formulaTooltip:
+      'Illustrative count of discovered prospects scoring ≥ 80% against active ICP qualification rubrics.',
+  },
+  {
+    id: 'campaigns-running',
+    title: 'Campaigns Running',
+    value: '3',
+    numericValue: 3,
+    changePercent: 50,
+    trend: 'up',
+    accent: 'orange',
+    sparkline: [1, 1, 2, 2, 2, 3, 2, 3],
+    href: '/campaigns?status=Active',
+    formulaTooltip:
+      'Illustrative number of active outreach campaigns with human-approved drafts currently scheduled.',
+  },
+  {
+    id: 'revenue-mtd',
+    title: 'Attributed Revenue (MTD)',
+    value: '$24,860',
+    numericValue: 24860,
+    changePercent: 48,
+    trend: 'up',
+    accent: 'purple',
+    sparkline: [8, 12, 11, 17, 16, 21, 23, 28],
+    href: '/reports',
+    formulaTooltip:
+      'Illustrative attributed revenue from converted campaign opportunities. Production environments show empty state until revenue attribution is connected.',
+  },
+];
+
+export const ILLUSTRATIVE_PERFORMANCE_BY_RANGE: Record<
+  DateRangePreset,
+  PerformancePoint[]
+> = {
+  '7D': [
+    {
+      date: 'Nov 17',
+      prospects: 310,
+      qualifiedLeads: 84,
+      campaigns: 2,
+      revenue: 3120,
+    },
+    {
+      date: 'Nov 18',
+      prospects: 365,
+      qualifiedLeads: 96,
+      campaigns: 2,
+      revenue: 3480,
+    },
+    {
+      date: 'Nov 19',
+      prospects: 340,
+      qualifiedLeads: 91,
+      campaigns: 2,
+      revenue: 3290,
+    },
+    {
+      date: 'Nov 20',
+      prospects: 420,
+      qualifiedLeads: 112,
+      campaigns: 3,
+      revenue: 3940,
+    },
+    {
+      date: 'Nov 21',
+      prospects: 455,
+      qualifiedLeads: 121,
+      campaigns: 3,
+      revenue: 4210,
+    },
+    {
+      date: 'Nov 22',
+      prospects: 492,
+      qualifiedLeads: 134,
+      campaigns: 3,
+      revenue: 4680,
+    },
+    {
+      date: 'Nov 23',
+      prospects: 538,
+      qualifiedLeads: 149,
+      campaigns: 3,
+      revenue: 5140,
+    },
+  ],
+  '30D': [
+    {
+      date: 'Nov 1',
+      prospects: 640,
+      qualifiedLeads: 360,
+      campaigns: 1,
+      revenue: 2420,
+    },
+    {
+      date: 'Nov 4',
+      prospects: 780,
+      qualifiedLeads: 495,
+      campaigns: 2,
+      revenue: 3680,
+    },
+    {
+      date: 'Nov 7',
+      prospects: 910,
+      qualifiedLeads: 560,
+      campaigns: 2,
+      revenue: 4240,
+    },
+    {
+      date: 'Nov 10',
+      prospects: 880,
+      qualifiedLeads: 590,
+      campaigns: 2,
+      revenue: 4120,
+    },
+    {
+      date: 'Nov 14',
+      prospects: 1080,
+      qualifiedLeads: 730,
+      campaigns: 2,
+      revenue: 5890,
+    },
+    {
+      date: 'Nov 18',
+      prospects: 1050,
+      qualifiedLeads: 780,
+      campaigns: 3,
+      revenue: 6420,
+    },
+    {
+      date: 'Nov 21',
+      prospects: 1210,
+      qualifiedLeads: 920,
+      campaigns: 3,
+      revenue: 8160,
+    },
+    {
+      date: 'Nov 25',
+      prospects: 1380,
+      qualifiedLeads: 970,
+      campaigns: 3,
+      revenue: 9420,
+    },
+    {
+      date: 'Nov 30',
+      prospects: 1620,
+      qualifiedLeads: 1090,
+      campaigns: 3,
+      revenue: 11840,
+    },
+  ],
+  '90D': [
+    {
+      date: 'Sep W1',
+      prospects: 410,
+      qualifiedLeads: 160,
+      campaigns: 1,
+      revenue: 1850,
+    },
+    {
+      date: 'Sep W3',
+      prospects: 590,
+      qualifiedLeads: 245,
+      campaigns: 1,
+      revenue: 2940,
+    },
+    {
+      date: 'Oct W1',
+      prospects: 760,
+      qualifiedLeads: 330,
+      campaigns: 2,
+      revenue: 4400,
+    },
+    {
+      date: 'Oct W3',
+      prospects: 940,
+      qualifiedLeads: 460,
+      campaigns: 2,
+      revenue: 6180,
+    },
+    {
+      date: 'Nov W1',
+      prospects: 1180,
+      qualifiedLeads: 620,
+      campaigns: 3,
+      revenue: 8920,
+    },
+    {
+      date: 'Nov W3',
+      prospects: 1580,
+      qualifiedLeads: 890,
+      campaigns: 3,
+      revenue: 12460,
+    },
+  ],
+  Custom: [
+    {
+      date: 'Nov 1',
+      prospects: 640,
+      qualifiedLeads: 360,
+      campaigns: 1,
+      revenue: 2420,
+    },
+    {
+      date: 'Nov 8',
+      prospects: 920,
+      qualifiedLeads: 575,
+      campaigns: 2,
+      revenue: 4380,
+    },
+    {
+      date: 'Nov 15',
+      prospects: 1110,
+      qualifiedLeads: 760,
+      campaigns: 2,
+      revenue: 6150,
+    },
+    {
+      date: 'Nov 22',
+      prospects: 1340,
+      qualifiedLeads: 940,
+      campaigns: 3,
+      revenue: 8820,
+    },
+    {
+      date: 'Nov 30',
+      prospects: 1620,
+      qualifiedLeads: 1090,
+      campaigns: 3,
+      revenue: 11840,
+    },
+  ],
+};
+
+export const ILLUSTRATIVE_TOP_INDUSTRIES: IndustryDistributionItem[] = [
+  { industry: 'Technology', percentage: 28.4, count: 809, color: '#3B82F6' },
+  { industry: 'Healthcare', percentage: 22.1, count: 629, color: '#00B6B6' },
+  { industry: 'Finance', percentage: 18.7, count: 532, color: '#F59E0B' },
+  { industry: 'E-commerce', percentage: 16.3, count: 464, color: '#8B5CF6' },
+  { industry: 'Others', percentage: 14.5, count: 413, color: '#9A9FAF' },
+];
+
+export const ILLUSTRATIVE_UPCOMING_TASKS: TaskItem[] = [
+  {
+    id: 'task_1',
+    title: 'Review Q4 SaaS outreach campaign drafts',
+    resourceLabel: 'Q4 SaaS Outreach',
+    href: '/campaigns',
+    dueLabel: 'Due Today',
+    priority: 'High',
+    completed: false,
+  },
+  {
+    id: 'task_2',
+    title: 'Inspect qualification evidence for top 10 enterprise matches',
+    resourceLabel: 'Analyze · example.com',
+    href: '/analyze/anl_example_01/results',
+    dueLabel: 'Due Tomorrow',
+    priority: 'Medium',
+    completed: false,
+  },
+  {
+    id: 'task_3',
+    title: 'Refine B2B FinTech ICP buying signals',
+    resourceLabel: 'Workspace · ICPs',
+    href: '/workspace?tab=icp',
+    dueLabel: 'In 2 Days',
+    priority: 'Medium',
+    completed: false,
+  },
+];
+
+export const ILLUSTRATIVE_RECENT_ACTIVITY: ActivityEvent[] = [
+  {
+    id: 'act_1',
+    title: 'Campaign performance updated',
+    detail:
+      'Q4 SaaS Outreach recorded 342 opens and 23 newly qualified replies.',
+    timestamp: '2m ago',
+    category: 'campaign',
+    href: '/campaigns',
+  },
+  {
+    id: 'act_2',
+    title: '742 qualified leads indexed',
+    detail:
+      'Qualification rubric updated across Technology and Healthcare cohorts.',
+    timestamp: '5m ago',
+    category: 'prospect',
+    href: '/prospects',
+  },
+  {
+    id: 'act_3',
+    title: 'Analysis completed for https://www.example.com',
+    detail: '86 high-fit companies matched with explainable evidence.',
+    timestamp: '12m ago',
+    category: 'analysis',
+    href: '/analyze/anl_example_01/results',
+  },
+  {
+    id: 'act_4',
+    title: 'New campaign created "Q4 SaaS Outreach"',
+    detail: 'Human approval gate enabled prior to external outreach dispatch.',
+    timestamp: '1h ago',
+    category: 'campaign',
+    href: '/campaigns',
+  },
+];

@@ -34,7 +34,11 @@ function getIosInstallHelpVisibility() {
   return isIosDevice() && !isStandalone();
 }
 
-export function PwaControls() {
+export function PwaControls({
+  showControls = true,
+}: {
+  showControls?: boolean;
+}) {
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(
     null,
   );
@@ -119,7 +123,12 @@ export function PwaControls() {
     setUpdateAvailable(false);
   };
 
-  if (!installPrompt && !showIosInstructions && !updateAvailable) return null;
+  if (
+    !showControls ||
+    (!installPrompt && !showIosInstructions && !updateAvailable)
+  ) {
+    return null;
+  }
 
   return (
     <div className="pwa-controls" aria-label="App options">

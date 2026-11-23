@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import '@fontsource-variable/ibm-plex-sans';
-import { AppShell } from '@/components/app-shell';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -27,14 +26,14 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
-  themeColor: '#1b6c80',
+  themeColor: '#0D0E11',
 };
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
     <html lang="en">
-      <body>
-        <AppShell>{children}</AppShell>
+      <body className="bg-app text-text-primary min-h-screen font-sans antialiased">
+        {children}
       </body>
     </html>
   );
