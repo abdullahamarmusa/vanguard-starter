@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRef, type ReactNode } from 'react';
+import { PwaControls } from './pwa-controls';
 
 const navigation = [
   { href: '/', label: 'Overview' },
@@ -81,6 +82,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </Link>
           <p className="topbar-scope">Offer-to-Lead Intelligence</p>
           <p className="environment-note">Local foundation</p>
+          <PwaControls />
           <details className="mobile-menu" ref={mobileMenu}>
             <summary>Menu</summary>
             <div className="mobile-menu__panel">

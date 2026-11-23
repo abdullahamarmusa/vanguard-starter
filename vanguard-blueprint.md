@@ -1,5 +1,14 @@
 # **VANGUARD — Complete SaaS Product Blueprint**
 
+> **Status: long-term product vision and historical planning notes.** This
+> document is not the approved implementation specification. For the current
+> MVP scope, architecture, authentication direction, database rules, and
+> delivery plan, use [docs/PRODUCT.md](docs/PRODUCT.md),
+> [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/DATABASE.md](docs/DATABASE.md),
+> [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md), and the accepted ADRs. Older
+> provider, infrastructure, campaign-sending, and schedule recommendations
+> below are hypotheses for future validation; they do not override those docs.
+
 # **VANGUARD**
 
 AI BUSINESS INTELLIGENCE & REVENUE OPERATIONS
@@ -39,11 +48,9 @@ Your central workflow should be:
 
 One important market observation: Explee already advertises an AI outreach agent for market research, prospect discovery, personalized emails and booking demos, alongside a separate B2B company/contact database. Its published pricing currently advertises $30 for 750 emails, approximately 2–6 warm leads and a stated $1–$20 cost per lead. These are Explee's marketing estimates, not guaranteed outcomes.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://explee.com\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://explee.com&sz=32)
 
 Explee
-
-
 
 This means VANGUARD needs differentiation beyond simply copying an AI email generator.
 
@@ -184,19 +191,15 @@ You already work with Next.js, TypeScript, React, PostgreSQL and Supabase. I wou
 
 Supabase's current production security checklist emphasizes RLS on every exposed table and checking access restrictions before production. Its current Pro plan starts at $25/month, although actual infrastructure costs depend on usage.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://supabase.com\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://supabase.com&sz=32)
 
 Supabase Docs+1
 
-
-
 Trigger.dev is worth evaluating for background tasks because it supports queues, retries, concurrency controls and per-tenant execution limits.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://trigger.dev\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://trigger.dev&sz=32)
 
 Trigger.dev
-
-
 
 ### **Build versus buy**
 
@@ -324,11 +327,9 @@ VANGUARD should be designed to support:
 
 For GDPR-related customer data, remember that individuals have a right to object to processing for direct marketing. That objection must be respected for that purpose.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://commission.europa.eu\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://commission.europa.eu&sz=32)
 
 European Commission+2
-
-
 
 Do not assume that a public business email address automatically makes its use lawful in every jurisdiction.
 
@@ -406,11 +407,9 @@ Direct service costs include AI, data, enrichment, email processing, infrastruct
 
 Paddle currently advertises standard pay-as-you-go merchant-of-record pricing of 5% plus $0.50 per checkout transaction. Bangladesh appears in its published supported-country documentation, but your business must still pass its verification and onboarding process.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://www.paddle.com\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://www.paddle.com&sz=32)
 
 Paddle+2
-
-
 
 For a $149 transaction:
 
@@ -438,11 +437,9 @@ The actual numbers must come from metered pilot usage.
 
 Hunter is a reasonable first provider to investigate. Its API documentation currently describes charges of one credit for a successful email-finder result, half a credit for verification on the relevant plan and 0.2 credits for certain enrichment results.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://help.hunter.io\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://help.hunter.io&sz=32)
 
 Hunter Help Center+1
-
-
 
 ### **Trial and conversion strategy**
 
@@ -758,29 +755,27 @@ For example:
 
 - US commercial email is subject to CAN-SPAM, including accurate sender information, non-deceptive subject lines, physical postal-address information and opt-out requirements. It also applies to B2B commercial email.&#x20;
 
-  [image](https://www.google.com/s2/favicons?domain=https://www.ftc.gov\&sz=32)
+  [image](https://www.google.com/s2/favicons?domain=https://www.ftc.gov&sz=32)
 
   Federal Trade Commission
 
 - UK electronic marketing rules distinguish corporate subscribers from sole traders and some partnerships. Personal business contact information may also be subject to UK GDPR.&#x20;
 
-  [image](https://www.google.com/s2/favicons?domain=https://ico.org.uk\&sz=32)
+  [image](https://www.google.com/s2/favicons?domain=https://ico.org.uk&sz=32)
 
   ico.org.uk+1
 
 - EU direct electronic marketing is subject to the ePrivacy framework and national implementation. You cannot assume a legitimate-interest assessment alone makes every unsolicited marketing email lawful.&#x20;
 
-  [image](https://www.google.com/s2/favicons?domain=https://www.edpb.europa.eu\&sz=32)
+  [image](https://www.google.com/s2/favicons?domain=https://www.edpb.europa.eu&sz=32)
 
   edpb.europa.eu+1
 
 - Gmail requires authentication for senders. Bulk senders sending more than 5,000 messages per day to Gmail accounts face additional SPF, DKIM, DMARC and one-click unsubscribe requirements. Google specifies maintaining reported spam rates below 0.3%.&#x20;
 
-  [image](https://www.google.com/s2/favicons?domain=https://support.google.com\&sz=32)
+  [image](https://www.google.com/s2/favicons?domain=https://support.google.com&sz=32)
 
   Gmail Help+1
-
-
 
 For the first release, I would support a clearly defined set of permitted markets and contact categories instead of promising unrestricted global outreach.
 
@@ -808,11 +803,9 @@ For a solo founder, the infrastructure must be inexpensive but not fragile.
 
 Supabase currently lists a $25/month starting Pro plan. Paddle advertises 5% + $0.50 per checkout transaction. These give you useful initial cost inputs, but they are not a complete operating budget.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://supabase.com\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://supabase.com&sz=32)
 
 Supabase+1
-
-
 
 ### **How to control infrastructure costs**
 
@@ -831,11 +824,9 @@ Build these controls into the product:
 
 Gmail API is not a substitute for unlimited campaign infrastructure: its sending method consumes API quota, while separate per-user sending limits also apply.&#x20;
 
-[image](https://www.google.com/s2/favicons?domain=https://developers.google.com\&sz=32)
+[image](https://www.google.com/s2/favicons?domain=https://developers.google.com&sz=32)
 
 developers.google.com+1
-
-
 
 ### **Initial operating principle**
 

@@ -26,7 +26,12 @@ environment, so this service and migrations were not run here. In production,
 choose a managed PostgreSQL provider after evaluating region, backups,
 point-in-time recovery, connection pooling, availability, support, and cost.
 Neon, Render, Railway, and AWS RDS are candidates, not commitments. Keep
-`DATABASE_URL` and migrations provider-neutral.
+`DATABASE_URL` and migrations provider-neutral. Local Compose creates a
+`vanguard_migrator` role for migrations and a separate `vanguard_app` role for
+the application. The app role has `NOBYPASSRLS`, does not own schema objects,
+and receives privileges on migration-created objects through default grants.
+Set `DATABASE_URL` to the app role and `MIGRATION_DATABASE_URL` to the
+migration role; never point both at the same role in production.
 
 Production migrations run using a dedicated migration role. The runtime
 connection must use a separate least-privilege role and must not own tables or
@@ -57,21 +62,27 @@ and its evidence links.
 ## Tenant access and RLS
 
 RLS is enabled on tenant-owned tables. Policies compare `organization_id` with
-`current_setting('vanguard.organization_id', true)`. The
-`inTenantTransaction` helper validates the UUID and sets the value with
-transaction-local `set_config(..., true)`, which resets on commit/rollback and
-does not leak through connection pools.
+`current_setting('vanguard.organization_id', true)`. Organization discovery
+and membership lookup have separate policies: a user can see their own
+membership rows and organizations only through those memberships. The
+`inAuthorizedTenantTransaction` helper sets the authenticated user context,
+checks membership and role inside the transaction, then sets the organization
+context before invoking the operation. Its `userId` must come only from a
+server-validated Auth.js session. Auth.js is not configured yet, so tenant
+operations must remain unavailable until session validation is implemented.
+Both settings use transaction-local `set_config(..., true)` and reset when the
+transaction ends.
 
-The helper is not a complete authorization system: authenticate the user,
-check membership and role, derive the tenant server-side, then enter the
-transaction. The runtime database role must not own the tables or have
-`BYPASSRLS`. Before production, add PostgreSQL integration tests that run as
-that role and prove cross-tenant reads and writes are rejected.
+The runtime role does not own tables and has `NOBYPASSRLS`, so it cannot skip
+policies. The migration role owns schema changes and must never serve app
+requests. PostgreSQL integration tests should run as the runtime role and
+prove cross-tenant and cross-workspace reads and writes are rejected before
+customer data is handled.
 
 ## Migration and backup policy
 
-Generate and commit reviewed migrations with `pnpm db:generate`; apply them
-with `pnpm db:migrate`. Do not use schema push against production. Backups and
+Generate and commit reviewed migrations with `MIGRATION_DATABASE_URL` set via
+`pnpm db:generate`; apply them with `pnpm db:migrate`. Do not use schema push against production. Backups and
 point-in-time recovery are deployment requirements; define retention, restore
 drills, deletion, and data-export behavior before customer onboarding.
 

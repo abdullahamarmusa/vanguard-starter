@@ -40,8 +40,9 @@ pnpm format:check
 ```
 
 `pnpm test:e2e` requires a Playwright browser installation (`pnpm exec
-playwright install chromium`). Database migration commands require a running
-PostgreSQL instance and a valid `DATABASE_URL`.
+playwright install chromium`). The app uses `DATABASE_URL` as the restricted
+runtime role. Drizzle generation and migrations require the separate
+`MIGRATION_DATABASE_URL`.
 
 ## Architecture
 
@@ -49,6 +50,7 @@ PostgreSQL instance and a valid `DATABASE_URL`.
 - [System architecture and security boundaries](docs/ARCHITECTURE.md)
 - [Database evaluation, schema, and migration policy](docs/DATABASE.md)
 - [Development and testing](docs/DEVELOPMENT.md)
+- [Responsive web and PWA foundation](docs/PWA.md)
 - [Deployment and operations](docs/DEPLOYMENT.md)
 - [Development roadmap](docs/ROADMAP.md)
 - [Architecture decision records](docs/adr/)

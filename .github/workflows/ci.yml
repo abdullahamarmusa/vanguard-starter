@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: vanguard
+          POSTGRES_USER: vanguard_migrator
+          POSTGRES_PASSWORD: ci-migration-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U vanguard_migrator -d vanguard"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MIGRATION_DATABASE_URL: postgres://vanguard_migrator:ci-migration-password@127.0.0.1:5432/vanguard
+      DATABASE_URL: postgres://vanguard_app:ci-runtime-password@127.0.0.1:5432/vanguard
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.20.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: |
+          PGPASSWORD=ci-migration-password psql "$MIGRATION_DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE vanguard_app LOGIN PASSWORD 'ci-runtime-password' NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOBYPASSRLS;
+          REVOKE ALL ON SCHEMA public FROM PUBLIC;
+          GRANT CONNECT ON DATABASE vanguard TO vanguard_app;
+          GRANT USAGE ON SCHEMA public TO vanguard_app;
+          ALTER DEFAULT PRIVILEGES FOR ROLE vanguard_migrator IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO vanguard_app;
+          ALTER DEFAULT PRIVILEGES FOR ROLE vanguard_migrator IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO vanguard_app;
+          SQL
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm db:migrate
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
+      - run: pnpm build
+      - run: pnpm test:pwa

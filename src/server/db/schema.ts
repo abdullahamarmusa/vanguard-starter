@@ -129,8 +129,19 @@ export const organizations = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [uniqueIndex('organizations_slug_key').on(table.slug)],
-);
+  (table) => [
+    uniqueIndex('organizations_slug_key').on(table.slug),
+    pgPolicy('organizations_member_read', {
+      for: 'select',
+      to: 'public',
+      using: sql`exists (
+        select 1 from organization_memberships
+        where organization_memberships.organization_id = ${table.id}
+          and organization_memberships.user_id = current_setting('vanguard.user_id', true)
+      )`,
+    }),
+  ],
+).enableRLS();
 
 export const organizationMemberships = pgTable(
   'organization_memberships',
@@ -153,8 +164,13 @@ export const organizationMemberships = pgTable(
       table.userId,
     ),
     index('organization_memberships_user_id_idx').on(table.userId),
+    pgPolicy('organization_memberships_self_read', {
+      for: 'select',
+      to: 'public',
+      using: sql`${table.userId} = current_setting('vanguard.user_id', true)`,
+    }),
   ],
-);
+).enableRLS();
 
 export const workspaces = pgTable(
   'workspaces',
@@ -329,6 +345,11 @@ export const evidence = pgTable(
       ],
     }).onDelete('cascade'),
     uniqueIndex('evidence_org_id_key').on(table.organizationId, table.id),
+    uniqueIndex('evidence_org_workspace_id_key').on(
+      table.organizationId,
+      table.workspaceId,
+      table.id,
+    ),
     index('evidence_org_workspace_company_idx').on(
       table.organizationId,
       table.workspaceId,
@@ -418,6 +439,11 @@ export const leadQualifications = pgTable(
       table.organizationId,
       table.id,
     ),
+    uniqueIndex('lead_qualifications_org_workspace_id_key').on(
+      table.organizationId,
+      table.workspaceId,
+      table.id,
+    ),
     index('lead_qualifications_org_workspace_score_idx').on(
       table.organizationId,
       table.workspaceId,
@@ -437,26 +463,37 @@ export const leadQualificationEvidence = pgTable(
     organizationId: uuid('organization_id')
       .notNull()
       .references(() => organizations.id, { onDelete: 'cascade' }),
+    workspaceId: uuid('workspace_id').notNull(),
     qualificationId: uuid('qualification_id').notNull(),
     evidenceId: uuid('evidence_id').notNull(),
   },
   (table) => [
     primaryKey({
-      columns: [table.organizationId, table.qualificationId, table.evidenceId],
+      columns: [
+        table.organizationId,
+        table.workspaceId,
+        table.qualificationId,
+        table.evidenceId,
+      ],
       name: 'lead_qualification_evidence_pk',
     }),
     foreignKey({
       name: 'lead_qualification_evidence_qualification_tenant_fk',
-      columns: [table.organizationId, table.qualificationId],
+      columns: [table.organizationId, table.workspaceId, table.qualificationId],
       foreignColumns: [
         leadQualifications.organizationId,
+        leadQualifications.workspaceId,
         leadQualifications.id,
       ],
     }).onDelete('cascade'),
     foreignKey({
       name: 'lead_qualification_evidence_evidence_tenant_fk',
-      columns: [table.organizationId, table.evidenceId],
-      foreignColumns: [evidence.organizationId, evidence.id],
+      columns: [table.organizationId, table.workspaceId, table.evidenceId],
+      foreignColumns: [
+        evidence.organizationId,
+        evidence.workspaceId,
+        evidence.id,
+      ],
     }).onDelete('cascade'),
     tenantPolicy(
       'lead_qualification_evidence_tenant_isolation',

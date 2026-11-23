@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1b6c80" />
+    <title>Offline · VANGUARD</title>
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: system-ui, sans-serif;
+        color: #131416;
+        background: #f9fbfc;
+      }
+      body {
+        display: grid;
+        min-height: 100vh;
+        min-height: 100dvh;
+        margin: 0;
+        place-items: center;
+      }
+      main {
+        width: min(100% - 40px, 440px);
+        padding: 28px;
+        border: 1px solid #e1e7e9;
+        border-radius: 12px;
+        background: white;
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.35rem;
+      }
+      p {
+        color: #555b5e;
+        line-height: 1.6;
+      }
+      button {
+        min-height: 44px;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 6px;
+        color: white;
+        background: #1d1f20;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:focus-visible {
+        outline: 2px solid #1b6c80;
+        outline-offset: 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>You’re offline</h1>
+      <p>
+        Reconnect to continue using VANGUARD. Your account data is never stored
+        for offline use.
+      </p>
+      <button type="button" onclick="location.reload()">Try again</button>
+    </main>
+  </body>
+</html>

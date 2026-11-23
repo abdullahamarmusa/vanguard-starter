@@ -30,6 +30,7 @@ html {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   background: var(--frame);
   color: var(--text);
@@ -173,6 +174,60 @@ summary:focus-visible {
 .mobile-brand,
 .mobile-menu {
   display: none;
+}
+
+.pwa-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-action {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  background: var(--surface);
+  font: inherit;
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.pwa-action:hover {
+  background: var(--raised);
+}
+
+.pwa-install-help {
+  position: relative;
+}
+
+.pwa-install-help summary {
+  list-style: none;
+}
+
+.pwa-install-help summary::-webkit-details-marker {
+  display: none;
+}
+
+.pwa-install-help p {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(280px, calc(100vw - 32px));
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 8px 24px rgb(19 20 22 / 12%);
+  color: var(--text);
+  font-size: 13px;
 }
 
 .page-content {
@@ -443,6 +498,7 @@ summary:focus-visible {
   .app-shell {
     display: block;
     min-height: 100vh;
+    min-height: 100dvh;
     padding: 0;
   }
 
@@ -452,6 +508,7 @@ summary:focus-visible {
 
   .workspace-frame {
     min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     border: 0;
     border-radius: 0;
@@ -460,7 +517,8 @@ summary:focus-visible {
   .topbar {
     position: relative;
     min-height: 52px;
-    padding: 0 18px;
+    padding: env(safe-area-inset-top) max(18px, env(safe-area-inset-right)) 0
+      max(18px, env(safe-area-inset-left));
     border-bottom: 1px solid var(--border);
   }
 
@@ -495,7 +553,7 @@ summary:focus-visible {
   .mobile-menu summary {
     display: flex;
     min-width: 44px;
-    min-height: 40px;
+    min-height: 44px;
     align-items: center;
     justify-content: center;
     padding: 0 10px;
@@ -515,7 +573,10 @@ summary:focus-visible {
     inset: 0;
     display: flex;
     flex-direction: column;
-    padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+    padding: calc(20px + env(safe-area-inset-top))
+      calc(20px + env(safe-area-inset-right))
+      calc(20px + env(safe-area-inset-bottom))
+      calc(20px + env(safe-area-inset-left));
     background: var(--ground);
   }
 
@@ -539,6 +600,10 @@ summary:focus-visible {
     background: var(--surface);
     color: var(--text);
     font: inherit;
+  }
+
+  .pwa-action {
+    min-height: 44px;
   }
 
   .mobile-menu .primary-nav {

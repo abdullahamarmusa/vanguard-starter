@@ -37,10 +37,12 @@ and credentials are selected.
 | `pnpm lint`         | Run the Next.js ESLint configuration.                                                                   |
 | `pnpm format:check` | Check formatting.                                                                                       |
 | `pnpm test`         | Run focused unit tests with Vitest.                                                                     |
+| `pnpm test:db`      | Run PostgreSQL tenant-isolation tests with migration and runtime URLs set.                              |
 | `pnpm test:e2e`     | Run browser smoke tests with Playwright. Install Chromium with `pnpm exec playwright install chromium`. |
+| `pnpm test:pwa`     | Run production service-worker and offline checks after `pnpm build`.                                    |
 | `pnpm build`        | Create the production build.                                                                            |
 | `pnpm db:generate`  | Generate a migration from the Drizzle schema.                                                           |
-| `pnpm db:migrate`   | Apply pending migrations using `DATABASE_URL`.                                                          |
+| `pnpm db:migrate`   | Apply pending migrations using `MIGRATION_DATABASE_URL`.                                                |
 
 ## Test strategy
 
@@ -55,4 +57,6 @@ and credentials are selected.
   passing until it has run against PostgreSQL using the restricted runtime
   role.
 
-The initial unit and browser tests do not need a database or credentials.
+The PostgreSQL suite is skipped when either database URL is missing. CI starts
+PostgreSQL, applies migrations as the migration role, and runs it as the
+restricted runtime role.

@@ -1,0 +1,20 @@
+\getenv app_password POSTGRES_APP_PASSWORD
+\getenv database_name POSTGRES_DB
+
+CREATE ROLE vanguard_app
+  LOGIN
+  PASSWORD :'app_password'
+  NOSUPERUSER
+  NOCREATEDB
+  NOCREATEROLE
+  NOINHERIT
+  NOBYPASSRLS;
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+GRANT CONNECT ON DATABASE :"database_name" TO vanguard_app;
+GRANT USAGE ON SCHEMA public TO vanguard_app;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE vanguard_migrator IN SCHEMA public
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO vanguard_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE vanguard_migrator IN SCHEMA public
+  GRANT USAGE, SELECT ON SEQUENCES TO vanguard_app;
