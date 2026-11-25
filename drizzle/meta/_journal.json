@@ -15,6 +15,34 @@
       "when": 1795450000000,
       "tag": "0001_workspace_scoped_evidence",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795495532454,
+      "tag": "0002_giant_rachel_grey",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1795600000000,
+      "tag": "0003_account_onboarding",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1795600001000,
+      "tag": "0004_tearful_korath",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1795600002000,
+      "tag": "0005_ordinary_raider",
+      "breakpoints": true
     }
   ]
 }

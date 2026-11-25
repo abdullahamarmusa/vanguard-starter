@@ -1,5 +1,64 @@
 import { expect, test } from '@playwright/test';
 
+test('uses the dark application theme and removes theme controls', async ({
+  page,
+}) => {
+  await page.goto('/dashboard');
+
+  await expect(page.locator('html')).toHaveClass(/dark/);
+  await expect(
+    page.getByRole('button', { name: /switch to .* theme/i }),
+  ).toHaveCount(0);
+
+  await page.goto('/settings');
+  await expect(page).toHaveURL(/\/settings$/);
+  await expect(page.getByRole('note', { name: 'VANGUARD prototype status' })).toBeVisible();
+});
+
+test('passes the complete responsive landing viewport matrix', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.goto('/');
+
+  const sizes = [
+    [360, 800],
+    [390, 844],
+    [414, 896],
+    [768, 1024],
+    [800, 1280],
+    [820, 1180],
+    [1024, 768],
+    [1280, 800],
+    [1366, 768],
+    [1440, 900],
+    [1536, 864],
+    [1920, 1080],
+    [2560, 1440],
+  ];
+
+  for (const [width, height] of sizes) {
+    await page.setViewportSize({ width, height });
+    const dimensions = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
+    }));
+    expect(
+      dimensions.content,
+      `landing should not overflow at ${width}px`,
+    ).toBeLessThanOrEqual(dimensions.viewport);
+  }
+
+  await expect(page.locator('.marketing-page')).toHaveCSS(
+    'background-color',
+    'rgb(247, 248, 250)',
+  );
+  await expect(page.locator('h1').first()).toHaveCSS(
+    'font-family',
+    /Inter Tight/,
+  );
+});
+
 test('keeps the shared workspace usable at phone, tablet, and desktop widths', async ({
   page,
 }) => {
@@ -7,9 +66,7 @@ test('keeps the shared workspace usable at phone, tablet, and desktop widths', a
 
   for (const width of [375, 768, 1280]) {
     await page.setViewportSize({ width, height: 900 });
-    await expect(
-      page.getByRole('heading', { name: /Welcome back/ }),
-    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Welcome back, Alex!/ })).toBeVisible();
 
     const dimensions = await page.evaluate(() => ({
       viewport: document.documentElement.clientWidth,
@@ -18,31 +75,16 @@ test('keeps the shared workspace usable at phone, tablet, and desktop widths', a
 
     expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
 
-    if (width <= 820) {
-      await expect(
-        page.getByRole('button', { name: 'Open navigation menu' }),
-      ).toBeVisible();
-    } else {
-      await expect(
-        page.getByRole('navigation', { name: 'Primary navigation' }),
-      ).toBeVisible();
-    }
   }
 });
 
-test('opens mobile navigation and follows a route', async ({ page }) => {
+test('opens the app navigation without an account', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto('/dashboard');
-  await page.getByRole('button', { name: 'Open navigation menu' }).click();
-  await page
-    .getByRole('dialog', { name: 'Navigation menu' })
-    .getByRole('link', { name: /Analyze/ })
-    .click();
-
-  await expect(page).toHaveURL(/\/analyze/);
-  await expect(
-    page.getByRole('heading', { name: /Turn Your Offer Into/ }),
-  ).toBeVisible();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page.getByRole('heading', { name: /Welcome back, Alex!/ })).toBeVisible();
+  const dimensions = await page.evaluate(() => ({ viewport: document.documentElement.clientWidth, content: document.documentElement.scrollWidth }));
+  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
 });
 
 test('keeps integrated section layouts within phone, tablet, and desktop widths', async ({
@@ -64,6 +106,7 @@ test('keeps integrated section layouts within phone, tablet, and desktop widths'
 
   for (const route of routes) {
     await page.goto(route);
+    await expect(page).toHaveURL(new RegExp(`${route}$`));
     for (const width of [375, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       const dimensions = await page.evaluate(() => ({

@@ -117,6 +117,7 @@ describeIfConfigured('PostgreSQL tenant isolation', () => {
   it('rejects linking evidence from another workspace in the same organization', async () => {
     await expect(
       app.begin(async (transaction) => {
+        await transaction`select set_config('vanguard.user_id', ${userId}, true)`;
         await transaction`select set_config('vanguard.organization_id', ${organizationId}, true)`;
         return transaction`
           insert into lead_qualification_evidence

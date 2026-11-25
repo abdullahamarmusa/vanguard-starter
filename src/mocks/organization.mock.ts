@@ -7,10 +7,10 @@ import type {
 } from '@/types/vanguard';
 
 export const ILLUSTRATIVE_USER: UserProfile = {
-  id: 'usr_abdullah_01',
-  name: 'Abdullah Amar Musa',
-  firstName: 'Abdullah',
-  email: 'abdullah@acmecorp.example',
+  id: 'usr_alex_demo',
+  name: 'Alex Morgan',
+  firstName: 'Alex',
+  email: 'alex@acme.example',
   role: 'Owner',
   initials: 'A',
 };
@@ -85,8 +85,8 @@ export const ILLUSTRATIVE_NOTIFICATIONS: NotificationItem[] = [
 export const ILLUSTRATIVE_MEMBERS: OrgMember[] = [
   {
     id: 'mem_1',
-    name: 'Abdullah Amar Musa',
-    email: 'abdullah@acmecorp.example',
+    name: 'Alex Morgan',
+    email: 'alex@acme.example',
     role: 'Owner',
     status: 'Active',
     lastActive: 'Online now',

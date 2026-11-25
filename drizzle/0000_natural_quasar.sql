@@ -1,3 +1,13 @@
+CREATE TYPE "organization_role" AS ENUM('owner', 'admin', 'member', 'analyst');
+--> statement-breakpoint
+CREATE TYPE "offer_status" AS ENUM('draft', 'ready', 'archived');
+--> statement-breakpoint
+CREATE TYPE "qualification_status" AS ENUM('pending', 'running', 'completed', 'failed');
+--> statement-breakpoint
+CREATE TYPE "evidence_source_kind" AS ENUM('licensed_api', 'customer_provided', 'public_record');
+--> statement-breakpoint
+CREATE TYPE "suppression_source" AS ENUM('unsubscribe', 'manual', 'provider_feedback');
+--> statement-breakpoint
 CREATE TABLE "accounts" (
 	"user_id" text NOT NULL,
 	"type" text NOT NULL,
@@ -178,6 +188,29 @@ CREATE TABLE "workspaces" (
 );
 --> statement-breakpoint
 ALTER TABLE "workspaces" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
+CREATE INDEX "accounts_user_id_idx" ON "accounts" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "audit_events_org_created_idx" ON "audit_events" USING btree ("organization_id","created_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "companies_org_workspace_id_key" ON "companies" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
+CREATE INDEX "companies_org_workspace_idx" ON "companies" USING btree ("organization_id","workspace_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "companies_org_workspace_domain_key" ON "companies" USING btree ("organization_id","workspace_id","domain");--> statement-breakpoint
+CREATE UNIQUE INDEX "evidence_org_id_key" ON "evidence" USING btree ("organization_id","id");--> statement-breakpoint
+CREATE INDEX "evidence_org_workspace_company_idx" ON "evidence" USING btree ("organization_id","workspace_id","company_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "icp_profiles_org_workspace_id_key" ON "icp_profiles" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
+CREATE UNIQUE INDEX "lead_qualifications_org_id_key" ON "lead_qualifications" USING btree ("organization_id","id");--> statement-breakpoint
+CREATE INDEX "lead_qualifications_org_workspace_score_idx" ON "lead_qualifications" USING btree ("organization_id","workspace_id","score");--> statement-breakpoint
+CREATE UNIQUE INDEX "offers_org_workspace_id_key" ON "offers" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
+CREATE INDEX "offers_org_workspace_idx" ON "offers" USING btree ("organization_id","workspace_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "organization_memberships_org_user_key" ON "organization_memberships" USING btree ("organization_id","user_id");--> statement-breakpoint
+CREATE INDEX "organization_memberships_user_id_idx" ON "organization_memberships" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "organizations_slug_key" ON "organizations" USING btree ("slug");--> statement-breakpoint
+CREATE UNIQUE INDEX "qualification_runs_org_workspace_id_key" ON "qualification_runs" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
+CREATE INDEX "qualification_runs_org_created_idx" ON "qualification_runs" USING btree ("organization_id","created_at");--> statement-breakpoint
+CREATE INDEX "sessions_user_id_idx" ON "sessions" USING btree ("user_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "suppression_entries_org_address_hash_key" ON "suppression_entries" USING btree ("organization_id","address_hash");--> statement-breakpoint
+CREATE INDEX "usage_events_org_time_idx" ON "usage_events" USING btree ("organization_id","occurred_at");--> statement-breakpoint
+CREATE UNIQUE INDEX "verification_tokens_token_key" ON "verification_tokens" USING btree ("token");--> statement-breakpoint
+CREATE UNIQUE INDEX "workspaces_org_id_id_key" ON "workspaces" USING btree ("organization_id","id");--> statement-breakpoint
+CREATE UNIQUE INDEX "workspaces_org_slug_key" ON "workspaces" USING btree ("organization_id","slug");--> statement-breakpoint
 ALTER TABLE "accounts" ADD CONSTRAINT "accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "audit_events" ADD CONSTRAINT "audit_events_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "companies" ADD CONSTRAINT "companies_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -204,29 +237,6 @@ ALTER TABLE "suppression_entries" ADD CONSTRAINT "suppression_entries_organizati
 ALTER TABLE "usage_events" ADD CONSTRAINT "usage_events_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "usage_events" ADD CONSTRAINT "usage_events_workspace_tenant_fk" FOREIGN KEY ("organization_id","workspace_id") REFERENCES "public"."workspaces"("organization_id","id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "workspaces" ADD CONSTRAINT "workspaces_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "accounts_user_id_idx" ON "accounts" USING btree ("user_id");--> statement-breakpoint
-CREATE INDEX "audit_events_org_created_idx" ON "audit_events" USING btree ("organization_id","created_at");--> statement-breakpoint
-CREATE UNIQUE INDEX "companies_org_workspace_id_key" ON "companies" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
-CREATE INDEX "companies_org_workspace_idx" ON "companies" USING btree ("organization_id","workspace_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "companies_org_workspace_domain_key" ON "companies" USING btree ("organization_id","workspace_id","domain");--> statement-breakpoint
-CREATE UNIQUE INDEX "evidence_org_id_key" ON "evidence" USING btree ("organization_id","id");--> statement-breakpoint
-CREATE INDEX "evidence_org_workspace_company_idx" ON "evidence" USING btree ("organization_id","workspace_id","company_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "icp_profiles_org_workspace_id_key" ON "icp_profiles" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
-CREATE UNIQUE INDEX "lead_qualifications_org_id_key" ON "lead_qualifications" USING btree ("organization_id","id");--> statement-breakpoint
-CREATE INDEX "lead_qualifications_org_workspace_score_idx" ON "lead_qualifications" USING btree ("organization_id","workspace_id","score");--> statement-breakpoint
-CREATE UNIQUE INDEX "offers_org_workspace_id_key" ON "offers" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
-CREATE INDEX "offers_org_workspace_idx" ON "offers" USING btree ("organization_id","workspace_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "organization_memberships_org_user_key" ON "organization_memberships" USING btree ("organization_id","user_id");--> statement-breakpoint
-CREATE INDEX "organization_memberships_user_id_idx" ON "organization_memberships" USING btree ("user_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "organizations_slug_key" ON "organizations" USING btree ("slug");--> statement-breakpoint
-CREATE UNIQUE INDEX "qualification_runs_org_workspace_id_key" ON "qualification_runs" USING btree ("organization_id","workspace_id","id");--> statement-breakpoint
-CREATE INDEX "qualification_runs_org_created_idx" ON "qualification_runs" USING btree ("organization_id","created_at");--> statement-breakpoint
-CREATE INDEX "sessions_user_id_idx" ON "sessions" USING btree ("user_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "suppression_entries_org_address_hash_key" ON "suppression_entries" USING btree ("organization_id","address_hash");--> statement-breakpoint
-CREATE INDEX "usage_events_org_time_idx" ON "usage_events" USING btree ("organization_id","occurred_at");--> statement-breakpoint
-CREATE UNIQUE INDEX "verification_tokens_token_key" ON "verification_tokens" USING btree ("token");--> statement-breakpoint
-CREATE UNIQUE INDEX "workspaces_org_id_id_key" ON "workspaces" USING btree ("organization_id","id");--> statement-breakpoint
-CREATE UNIQUE INDEX "workspaces_org_slug_key" ON "workspaces" USING btree ("organization_id","slug");--> statement-breakpoint
 CREATE POLICY "audit_events_tenant_isolation" ON "audit_events" AS PERMISSIVE FOR ALL TO public USING ("audit_events"."organization_id"::text = current_setting('vanguard.organization_id', true)) WITH CHECK ("audit_events"."organization_id"::text = current_setting('vanguard.organization_id', true));--> statement-breakpoint
 CREATE POLICY "companies_tenant_isolation" ON "companies" AS PERMISSIVE FOR ALL TO public USING ("companies"."organization_id"::text = current_setting('vanguard.organization_id', true)) WITH CHECK ("companies"."organization_id"::text = current_setting('vanguard.organization_id', true));--> statement-breakpoint
 CREATE POLICY "evidence_tenant_isolation" ON "evidence" AS PERMISSIVE FOR ALL TO public USING ("evidence"."organization_id"::text = current_setting('vanguard.organization_id', true)) WITH CHECK ("evidence"."organization_id"::text = current_setting('vanguard.organization_id', true));--> statement-breakpoint

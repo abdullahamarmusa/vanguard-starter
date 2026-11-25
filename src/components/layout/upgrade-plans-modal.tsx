@@ -10,8 +10,8 @@ import { usePrototypeStore } from '@/store/prototype-context';
 const PLANS = [
   {
     name: 'Starter',
-    price: '$79',
-    period: '/mo',
+    price: 'Not set',
+    period: '',
     description:
       'For independent studios running focused offer-to-lead discovery.',
     features: [
@@ -24,8 +24,8 @@ const PLANS = [
   },
   {
     name: 'Pro',
-    price: '$249',
-    period: '/mo',
+    price: 'Not set',
+    period: '',
     description:
       'For growing software agencies scaling intelligence & campaigns.',
     features: [
@@ -39,7 +39,7 @@ const PLANS = [
   },
   {
     name: 'Enterprise',
-    price: 'Custom',
+    price: 'Not set',
     period: '',
     description:
       'Dedicated data provider quotas, SSO, and custom RLS governance.',
@@ -61,7 +61,7 @@ export function UpgradePlansModal() {
       open={plansModalOpen}
       onClose={() => setPlansModalOpen(false)}
       title="VANGUARD Plans"
-      description="Illustrative SaaS packaging preview — billing connects to your existing billing provider."
+      description="Illustrative plan concepts only. Pricing is unapproved and no checkout or billing provider is connected."
       size="xl"
     >
       <div className="grid gap-4 md:grid-cols-3">
@@ -78,11 +78,11 @@ export function UpgradePlansModal() {
               <h3 className="text-text-primary text-base font-semibold">
                 {plan.name}
               </h3>
-              {plan.recommended && <Badge variant="brand">Current</Badge>}
+              {plan.recommended && <Badge variant="brand">Example</Badge>}
             </div>
             <div className="mt-3 flex items-baseline gap-1">
               <span className="text-text-primary text-2xl font-bold">
-                {plan.price}
+              {plan.price}
               </span>
               <span className="text-text-secondary text-xs">{plan.period}</span>
             </div>
@@ -106,14 +106,14 @@ export function UpgradePlansModal() {
               onClick={() => {
                 setPlansModalOpen(false);
                 pushToast({
-                  title: `${plan.name} plan selected (Prototype)`,
+                  title: `${plan.name} preview selected`,
                   description:
-                    'No live billing charge occurs in UI prototype mode.',
+                    'This selection does not create a subscription or change access.',
                   variant: 'info',
                 });
               }}
             >
-              {plan.current ? 'Active Workspace Plan' : `Select ${plan.name}`}
+              {plan.current ? 'Preview example plan' : `Preview ${plan.name}`}
             </Button>
           </div>
         ))}

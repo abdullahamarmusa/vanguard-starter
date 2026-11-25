@@ -14,7 +14,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         ref={ref}
         aria-invalid={Boolean(error)}
         className={cn(
-          'rounded-btn bg-app/70 text-text-primary placeholder:text-text-disabled h-10 w-full border px-3 text-sm',
+          'rounded-btn bg-app/70 text-text-primary placeholder:text-text-disabled h-[44px] w-full border px-3 text-sm',
           'focus:ring-brand/40 focus:border-brand transition-colors duration-150 focus:ring-2 focus:outline-none',
           'disabled:cursor-not-allowed disabled:opacity-50',
           error

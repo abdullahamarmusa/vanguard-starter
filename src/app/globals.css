@@ -1,8 +1,9 @@
 ﻿@import 'tailwindcss';
 
 @theme inline {
-  --font-sans: 'IBM Plex Sans Variable', system-ui, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, monospace;
+  --font-sans: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-display: 'Inter Tight Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
   --color-app: var(--bg-app);
   --color-sidebar: var(--bg-sidebar);
   --color-surface: var(--bg-surface);
@@ -37,23 +38,29 @@
 @layer base {
   :root,
   .dark {
-    /* VANGUARD Dark Theme â€” WCAG 2.1 AA Verified Foreground/Background Pairs */
-    --bg-app: #0d0e11; /* Deep Onyx */
-    --bg-sidebar: #13151a; /* Differentiated deep sidebar */
-    --bg-surface: #1e2026; /* Shadow Grey */
-    --bg-elevated: #242832; /* Elevated cards & dropdowns */
-    --bg-hover: #2a2f3b; /* Hovered interactive surfaces */
-    --border-subtle: #303642; /* Standardized subtle card/input border */
-    --border-strong: #434b5c; /* Emphasized borders */
+    /* Obsidian Intelligence application theme */
+    --bg-app: #08090c;
+    --bg-sidebar: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-surface-muted: #141b29;
+    --bg-elevated: #273449;
+    --bg-hover: #273449;
+    --border-subtle: #263244;
+    --border-strong: #334155;
 
-    --text-primary: #f2f2f2; /* White Smoke (15.4:1 on #1E2026) */
-    --text-secondary: #a6adbe; /* Lavender Grey lifted for >7:1 AA contrast */
-    --text-muted: #9a9faf; /* Supporting text (>6:1 on #1E2026) */
-    --text-disabled: #838b9d; /* AA-compliant metadata/subtle labels (>=4.6:1 on #1E2026) */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-disabled: #7f8ba1;
 
     --brand-soft: rgba(245, 158, 11, 0.14);
     --brand-border: rgba(245, 158, 11, 0.44);
     --teal-soft: rgba(0, 182, 182, 0.14);
+    --brand-amber: #f59e0b;
+    --brand-amber-hover: #fbbf24;
+    --brand-amber-foreground: #08090c;
+    --intelligence-teal: #00b6b6;
+    --data-cyan: #38bdf8;
 
     --vanguard-shadow-card: 0 8px 24px rgba(0, 0, 0, 0.16);
     --vanguard-shadow-elevated: 0 12px 32px -8px rgba(0, 0, 0, 0.62);
@@ -109,6 +116,15 @@
     outline: 2px solid #f59e0b;
     outline-offset: 3px;
   }
+}
+
+.font-display {
+  font-family: 'Inter Tight Variable', 'Plus Jakarta Sans Variable', system-ui,
+    sans-serif;
+}
+
+.font-technical {
+  font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
 }
 
 /* Subtle hero accent background (restrained, never garish) */
@@ -175,7 +191,7 @@
 
 /* Existing public roadmap and PWA controls */
 body {
-  font-family: 'IBM Plex Sans Variable', system-ui, sans-serif;
+  font-family: 'Plus Jakarta Sans Variable', system-ui, sans-serif;
 }
 .page-content {
   padding: 28px 24px 36px;
@@ -447,6 +463,126 @@ body {
     padding: 22px 18px 32px;
   }
 }
+/* Light Mode Accent & Hover System */
+:root {
+  --color-brand: #f59e0b;
+  --color-brand-hover: #d97706;
+  --color-gold-highlight: #ffb020;
+  --color-teal: #00b6b6;
+
+  /* Dark-theme accent derivations (light values live under .light) */
+  --accent-text: #fbbf24;
+  --accent-text-hover: #fde68a;
+  --accent-tint: rgba(245, 158, 11, 0.12);
+  --accent-tint-hover: rgba(245, 158, 11, 0.2);
+  --accent-border: rgba(217, 119, 6, 0.35);
+  --accent-glow: rgba(245, 158, 11, 0.28);
+
+  /* Telemetry / Data Highlight (Teal) */
+  --teal-text: #22d3ee;
+  --teal-tint: rgba(0, 182, 182, 0.12);
+  --teal-border: rgba(0, 182, 182, 0.35);
+}
+
+.light {
+  /* Light-Mode High-Contrast Accent Derivations */
+  --accent-text: #b45309; /* WCAG AA+ legible gold on white/alabaster */
+  --accent-text-hover: #92400e;
+  --accent-tint: rgba(245, 158, 11, 0.12);
+  --accent-tint-hover: rgba(245, 158, 11, 0.2);
+  --accent-border: rgba(217, 119, 6, 0.35);
+  --accent-glow: rgba(245, 158, 11, 0.28);
+
+  /* Telemetry / Data Highlight (Teal) */
+  --teal-text: #0e7490;
+}
+
+/* 1. Primary Brand CTA Button */
+.btn-brand {
+  background: linear-gradient(
+    180deg,
+    var(--color-gold-highlight) 0%,
+    var(--color-brand) 100%
+  );
+  color: #111113;
+  font-weight: 600;
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  box-shadow:
+    0 1px 2px rgba(17, 17, 19, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition:
+    background 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.btn-brand:hover {
+  background: linear-gradient(
+    180deg,
+    var(--color-brand) 0%,
+    var(--color-brand-hover) 100%
+  );
+  transform: translateY(-1px);
+  box-shadow:
+    0 8px 20px -4px var(--accent-glow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-brand:active {
+  transform: translateY(0);
+  background: var(--color-brand-hover);
+}
+
+/* 2. Inline Display Headline Highlight (e.g., "matter.") */
+.text-brand-accent {
+  background: linear-gradient(135deg, #fde68a 0%, #fbbf24 55%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.light .text-brand-accent {
+  background: linear-gradient(135deg, #92400e 0%, #d97706 55%, #f59e0b 100%);
+}
+
+/* 3. Subtle Interactive Pill / Chip / Secondary Accent */
+.badge-brand {
+  background-color: var(--accent-tint);
+  color: var(--accent-text);
+  border: 1px solid var(--accent-border);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.badge-brand:hover {
+  background-color: var(--accent-tint-hover);
+  border-color: var(--color-brand-hover);
+  color: var(--accent-text-hover);
+}
+
+/* 4. Input / Card Focus Ring */
+.focus-brand:focus-within {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--accent-tint);
+}
+
+/* 5. Data / Telemetry Accent Badge (Teal — non-brand data highlights) */
+.badge-telemetry {
+  background-color: var(--teal-tint);
+  color: var(--teal-text);
+  border: 1px solid var(--teal-border);
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.badge-telemetry:hover {
+  background-color: rgba(0, 182, 182, 0.18);
+  border-color: var(--color-teal);
+}
+
 @media (max-width: 560px) {
   .page-content {
     padding: 18px 13px 28px;

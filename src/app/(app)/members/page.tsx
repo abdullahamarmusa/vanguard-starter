@@ -31,8 +31,9 @@ export default function MembersPage() {
       },
     ]);
     pushToast({
-      title: `Invitation queued for ${inviteEmail}`,
-      variant: 'success',
+      title: 'Invitation preview added',
+      description: `No email was sent to ${inviteEmail}.`,
+      variant: 'info',
     });
     setInviteEmail('');
   };
@@ -54,7 +55,7 @@ export default function MembersPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Invite Team Member</CardTitle>
+          <CardTitle>Preview a team invitation</CardTitle>
         </CardHeader>
         <CardContent>
           <form
@@ -69,7 +70,7 @@ export default function MembersPage() {
             />
             <Button type="submit" size="md" className="shrink-0">
               <UserPlus className="h-4 w-4" />
-              Send Invite
+              Preview invitation
             </Button>
           </form>
         </CardContent>

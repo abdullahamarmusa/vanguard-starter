@@ -5,28 +5,26 @@ and revenue operations. Its first workflow is **Offer-to-Lead Intelligence**:
 help small software agencies turn a clear offer into evidence-backed,
 human-reviewed prospects.
 
-This repository is a foundation, not a production-ready sales system. It has no
-configured customer database, identity provider, enrichment source, or campaign
-sender. No customer data or provider credentials are included.
+This checkout is VANGUARD's public V1 product prototype. It uses illustrative
+records and simulated, browser-local interactions. No account, payment, email,
+live data provider, or campaign delivery is connected. It is not a production
+sales system. Authentication and provider infrastructure are a separate V2
+workstream and are not required to run the V1 preview.
 
 ## Development
 
-Requirements: Node.js 24+, pnpm 11+, and Docker Desktop when using the local
-PostgreSQL service. The current development environment did not have Docker or
-PostgreSQL installed.
+Requirements: Node.js 24+ and pnpm 11+. V1 runs without PostgreSQL, Docker, or
+third-party credentials. PostgreSQL is only needed for database integration
+tests and the separate V2 platform groundwork.
 
 ```powershell
-Copy-Item .env.example .env
-docker compose up -d db
 pnpm install
-pnpm db:generate
-pnpm db:migrate
 pnpm dev
 ```
 
-Open <http://localhost:3000>. Replace the example local-only password before
-using the database beyond a disposable development machine. Never copy example
-values into production.
+Open <http://localhost:3000> and choose **Explore preview**. The app routes are
+public; sign-in, registration, password recovery, verification, and onboarding
+URLs return to the prototype because V1 has no accounts.
 
 Useful checks:
 
@@ -40,9 +38,8 @@ pnpm format:check
 ```
 
 `pnpm test:e2e` requires a Playwright browser installation (`pnpm exec
-playwright install chromium`). The app uses `DATABASE_URL` as the restricted
-runtime role. Drizzle generation and migrations require the separate
-`MIGRATION_DATABASE_URL`.
+playwright install chromium`). PostgreSQL integration tests require local DB
+credentials; those are not needed for the public V1 experience.
 
 ## Architecture
 

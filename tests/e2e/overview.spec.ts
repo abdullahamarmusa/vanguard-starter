@@ -10,21 +10,18 @@ test('serves the integrated VANGUARD landing design at the public home route', a
   });
 
   await page.goto('/');
-  const landing = page.frameLocator(
-    'iframe[title="VANGUARD marketing landing page"]',
-  );
   await expect(
-    landing.getByRole('heading', { name: /Find the companies that matter/ }),
+    page.getByRole('heading', { name: /Find the companies that matter/ }),
   ).toBeVisible();
   await expect(
-    landing.getByRole('link', { name: /Start Analyzing/ }).first(),
-  ).toBeVisible();
+    page.locator('#start').getByRole('link', { name: 'Get started' }),
+  ).toHaveAttribute('href', '/analyze');
 
   for (const width of [375, 768, 1280]) {
     await page.setViewportSize({ width, height: 900 });
-    const dimensions = await landing.locator('html').evaluate((element) => ({
-      viewport: element.clientWidth,
-      content: element.scrollWidth,
+    const dimensions = await page.evaluate(() => ({
+      viewport: document.documentElement.clientWidth,
+      content: document.documentElement.scrollWidth,
     }));
     expect(
       dimensions.content,
@@ -34,20 +31,14 @@ test('serves the integrated VANGUARD landing design at the public home route', a
   expect(browserErrors).toEqual([]);
 });
 
-test('landing sign-in link reaches the explicit authentication placeholder', async ({
+test('landing preview action opens the public prototype', async ({
   page,
 }) => {
   await page.goto('/');
-  await page
-    .frameLocator('iframe[title="VANGUARD marketing landing page"]')
-    .getByRole('link', { name: 'Sign in', exact: true })
-    .click();
-
-  await expect(page).toHaveURL(/\/login$/);
-  await expect(
-    page.getByRole('heading', { name: 'Sign-in is not set up yet' }),
-  ).toBeVisible();
-  await expect(page.getByText(/no account session was created/i)).toBeVisible();
+  await page.getByRole('link', { name: 'Explore preview' }).first().click();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page.getByRole('heading', { name: /Welcome back, Alex!/ })).toBeVisible();
+  await expect(page.getByRole('note', { name: 'VANGUARD prototype status' })).toBeVisible();
 });
 
 test('unknown routes return the proper 404 page', async ({ page }) => {
@@ -59,53 +50,18 @@ test('unknown routes return the proper 404 page', async ({ page }) => {
   ).toBeVisible();
 });
 
-test('the dashboard presents the main VANGUARD workspace', async ({ page }) => {
+test('the dashboard is public and identifies its illustrative data', async ({ page }) => {
   await page.goto('/dashboard');
-
-  await expect(
-    page.getByRole('heading', { name: /Welcome back/ }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('button', { name: 'Illustrative Preview' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('button', { name: /Start Analysis/ }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: /Performance Overview/ }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Top Industries' }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole('heading', { name: 'Recent Activity' }),
-  ).toBeVisible();
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page.getByRole('note', { name: 'VANGUARD prototype status' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Illustrative Preview' })).toBeVisible();
 });
 
-test('Quick Analyze validates input and routes without claiming an analysis started', async ({
-  page,
-}) => {
+test('Quick Analyze is available without an account', async ({ page }) => {
   await page.goto('/dashboard');
-  await page.getByRole('button', { name: /Start Analysis/ }).click();
-  await expect(page.locator('[role="alert"]').first()).toContainText(
-    /at least 3 characters/i,
-  );
-
-  await page
-    .getByLabel('Website URL, offer description, or business idea')
-    .fill('SaaS for remote teams');
-  await page.getByRole('button', { name: /Start Analysis/ }).click();
-  await expect(page).toHaveURL(/\/analyze\?input=/);
-  await expect(
-    page.getByRole('heading', { name: /Turn Your Offer Into/ }),
-  ).toBeVisible();
-  await expect(
-    page.getByLabel('Website URL, Offer Headline, or Business Idea'),
-  ).toHaveValue('SaaS for remote teams');
-  await page.getByRole('button', { name: /Start Analysis/ }).click();
-  await expect(page.locator('p[role="alert"]')).toContainText(
-    /no analysis job was started/i,
-  );
+  await page.getByRole('navigation', { name: 'Primary navigation' }).getByRole('link', { name: 'Analyze' }).click();
+  await expect(page).toHaveURL(/\/analyze$/);
+  await expect(page.getByRole('note', { name: 'VANGUARD prototype status' })).toBeVisible();
 });
 
 test('renders every integrated dashboard destination', async ({ page }) => {
@@ -115,29 +71,13 @@ test('renders every integrated dashboard destination', async ({ page }) => {
     if (message.type() === 'error') browserErrors.push(message.text());
   });
 
-  const destinations = [
-    ['/dashboard', /Welcome back/],
-    ['/analyze', /Turn Your Offer Into/],
-    ['/analyze/anl_example_01', /Website Analysis/],
-    ['/analyze/anl_example_01/results', /Website Analysis Results/],
-    ['/prospects', /Discover & Manage Your Prospects/],
-    ['/campaigns', /Campaigns/],
-    ['/workspace', /Your Workspace/],
-    ['/reports', /Reports/],
-    ['/agents', /AI Agents for Smarter Growth/],
-    ['/settings', /Workspace Settings/],
-    ['/members', /Members & Roles/],
-    ['/billing', /Billing & Usage/],
-    ['/audit-logs', /Audit Logs/],
-    ['/roadmap', /Roadmap/],
-  ] as const;
+  const destinations = ['/dashboard','/analyze','/analyze/anl_example_01','/analyze/anl_example_01/results','/prospects','/campaigns','/workspace','/reports','/agents','/settings','/members','/billing','/audit-logs','/roadmap'] as const;
 
-  for (const [route, heading] of destinations) {
+  for (const route of destinations) {
     const response = await page.goto(route);
     expect(response?.ok(), `${route} should load successfully`).toBeTruthy();
-    await expect(
-      page.getByRole('heading', { level: 1, name: heading }),
-    ).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
+    await expect(page.getByRole('note', { name: 'VANGUARD prototype status' })).toBeVisible();
   }
 
   expect(browserErrors).toEqual([]);

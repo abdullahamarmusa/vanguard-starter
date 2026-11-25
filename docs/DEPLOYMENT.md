@@ -1,8 +1,14 @@
 # Deployment and operations
 
-## Initial deployment shape
+## V1 preview
 
-Deploy the Next.js application as a Node.js service and use one managed
+V1 is a public prototype that uses illustrative data and requires no database or
+provider credentials. Do not use its open app routes to onboard customers or
+handle private tenant data.
+
+## V2/V3 production deployment shape
+
+When production infrastructure is in scope, deploy the Next.js application as a Node.js service and use one managed
 PostgreSQL database in the selected region. Keep web and database networking
 private where the host permits. No deployment provider or cloud account has
 been selected or modified.

@@ -59,7 +59,7 @@ export function PerformanceOverviewCard() {
         <div className="border-border-subtle mb-4 flex flex-wrap items-center justify-between gap-3 border-b pb-3">
           {/* Metric tabs */}
           <div
-            className="flex items-center gap-1"
+            className="flex flex-wrap items-center gap-1"
             role="tablist"
             aria-label="Performance view tabs"
           >

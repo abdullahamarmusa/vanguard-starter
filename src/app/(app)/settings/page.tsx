@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { usePrototypeStore } from '@/store/prototype-context';
 
 export default function SettingsPage() {
-  const { activeOrg, theme, toggleTheme, pushToast } = usePrototypeStore();
+  const { activeOrg, pushToast } = usePrototypeStore();
   const [orgName, setOrgName] = useState(activeOrg.name);
   const [defaultThreshold, setDefaultThreshold] = useState('80');
 
@@ -64,21 +64,6 @@ export default function SettingsPage() {
                 value={defaultThreshold}
                 onChange={(e) => setDefaultThreshold(e.target.value)}
               />
-            </div>
-            <div className="rounded-btn border-border-subtle bg-app/60 flex items-center justify-between border px-3.5 py-3">
-              <div>
-                <p className="text-text-primary text-xs font-semibold">
-                  Interface Theme
-                </p>
-                <p className="text-text-secondary text-[11px]">
-                  Currently using{' '}
-                  {theme === 'dark' ? 'VANGUARD Dark (Onyx)' : 'VANGUARD Light'}
-                  .
-                </p>
-              </div>
-              <Button variant="secondary" size="xs" onClick={toggleTheme}>
-                Switch to {theme === 'dark' ? 'Light' : 'Dark'}
-              </Button>
             </div>
             <Button type="submit" size="sm">
               Save Changes

@@ -24,7 +24,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const variants: Record<NonNullable<ButtonProps['variant']>, string> = {
       primary:
-        'bg-brand text-[#0D0E11] hover:bg-brand-hover active:scale-[0.99] shadow-sm font-semibold',
+        'bg-brand text-[#08090C] hover:bg-brand-hover active:scale-[0.99] shadow-sm font-semibold',
       secondary:
         'bg-elevated text-text-primary border border-border-subtle hover:bg-hover hover:border-border-strong font-medium',
       outline:
@@ -37,11 +37,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes: Record<NonNullable<ButtonProps['size']>, string> = {
-      xs: 'h-7 px-2.5 text-xs rounded-control gap-1.5',
-      sm: 'h-8 px-3 text-xs rounded-btn gap-1.5',
-      md: 'h-10 px-4 text-sm rounded-btn gap-2',
-      lg: 'h-11 px-5 text-sm rounded-btn gap-2',
-      icon: 'h-9 w-9 rounded-btn justify-center',
+      xs: 'h-8 px-2.5 text-xs rounded-control gap-1.5',
+      sm: 'h-9 px-3 text-xs rounded-btn gap-1.5',
+      md: 'h-11 px-4 text-sm rounded-btn gap-2',
+      lg: 'h-[48px] px-5 text-sm rounded-btn gap-2',
+      icon: 'h-11 w-11 rounded-btn justify-center',
     };
 
     return (

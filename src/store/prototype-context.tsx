@@ -47,9 +47,6 @@ interface PrototypeContextValue {
   isEmptyWorkspace: boolean;
   toggleEmptyWorkspace: () => void;
 
-  theme: 'dark' | 'light';
-  toggleTheme: () => void;
-
   sidebarCollapsed: boolean;
   setSidebarCollapsed: (v: boolean) => void;
   mobileNavOpen: boolean;
@@ -145,8 +142,6 @@ interface PrototypeContextValue {
 const PrototypeContext = createContext<PrototypeContextValue | null>(null);
 
 const STORAGE_KEY_ANALYSES = 'vanguard_proto_analyses_v1';
-const STORAGE_KEY_THEME = 'vanguard_proto_theme_v1';
-
 export function PrototypeProvider({ children }: { children: React.ReactNode }) {
   const user = useMemo(() => mockVanguardAdapter.getCurrentUser(), []);
   const organizations = useMemo(
@@ -156,8 +151,6 @@ export function PrototypeProvider({ children }: { children: React.ReactNode }) {
 
   const [activeOrgId, setActiveOrgId] = useState<string>(organizations[0].id);
   const [manualEmptyMode, setManualEmptyMode] = useState<boolean>(false);
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
-
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [commandOpen, setCommandOpen] = useState(false);
@@ -204,14 +197,11 @@ export function PrototypeProvider({ children }: { children: React.ReactNode }) {
 
   const isEmptyWorkspace = Boolean(activeOrg.isEmptyDemo || manualEmptyMode);
 
-  /* Restore persisted theme & prototype analyses on mount */
+  /* Restore persisted prototype analyses on mount */
   useEffect(() => {
     try {
-      const savedTheme = window.localStorage.getItem(STORAGE_KEY_THEME);
       const savedAnalyses = window.sessionStorage.getItem(STORAGE_KEY_ANALYSES);
       requestAnimationFrame(() => {
-        if (savedTheme === 'light' || savedTheme === 'dark')
-          setTheme(savedTheme);
         if (savedAnalyses) {
           const parsed = JSON.parse(savedAnalyses) as AnalysisJob[];
           if (Array.isArray(parsed) && parsed.length > 0) setAnalyses(parsed);
@@ -221,18 +211,6 @@ export function PrototypeProvider({ children }: { children: React.ReactNode }) {
       // ignore storage errors in restricted environments
     }
   }, []);
-
-  /* Sync theme class on <html> */
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove('dark', 'light');
-    root.classList.add(theme);
-    try {
-      window.localStorage.setItem(STORAGE_KEY_THEME, theme);
-    } catch {
-      // ignore
-    }
-  }, [theme]);
 
   /* Persist prototype analyses in sessionStorage so refresh restores analysis progress */
   useEffect(() => {
@@ -268,10 +246,6 @@ export function PrototypeProvider({ children }: { children: React.ReactNode }) {
 
   const dismissToast = useCallback((id: string) => {
     setToasts((prev) => prev.filter((item) => item.id !== id));
-  }, []);
-
-  const toggleTheme = useCallback(() => {
-    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
   }, []);
 
   const setActiveOrgById = useCallback(
@@ -1241,8 +1215,6 @@ export function PrototypeProvider({ children }: { children: React.ReactNode }) {
     setActiveOrgById,
     isEmptyWorkspace,
     toggleEmptyWorkspace,
-    theme,
-    toggleTheme,
     sidebarCollapsed,
     setSidebarCollapsed,
     mobileNavOpen,

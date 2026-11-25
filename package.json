@@ -20,7 +20,11 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^1.11.3",
-    "@fontsource-variable/ibm-plex-sans": "^5.3.0",
+    "@fontsource-variable/inter-tight": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
+    "@paper-design/shaders": "0.0.82",
+    "@paper-design/shaders-react": "0.0.82",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.4",
     "lucide-react": "^0.468.0",

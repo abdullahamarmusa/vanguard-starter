@@ -50,8 +50,8 @@ function tenantPolicy(name: string, organizationId: AnyPgColumn) {
   return pgPolicy(name, {
     for: 'all',
     to: 'public',
-    using: sql`${organizationId}::text = current_setting('vanguard.organization_id', true)`,
-    withCheck: sql`${organizationId}::text = current_setting('vanguard.organization_id', true)`,
+    using: sql`${organizationId}::text = current_setting('vanguard.organization_id', true) and public.vanguard_is_org_member(${organizationId})`,
+    withCheck: sql`${organizationId}::text = current_setting('vanguard.organization_id', true) and public.vanguard_is_org_member(${organizationId})`,
   });
 }
 
@@ -63,6 +63,9 @@ export const users = pgTable('users', {
   email: text('email').unique(),
   emailVerified: timestamp('email_verified', { withTimezone: true }),
   image: text('image'),
+  passwordHash: text('password_hash'),
+  jobTitle: text('job_title'),
+  onboardingGoals: jsonb('onboarding_goals').$type<string[]>().default([]).notNull(),
 });
 
 export const accounts = pgTable(
@@ -119,12 +122,35 @@ export const verificationTokens = pgTable(
   ],
 );
 
+export const authTokens = pgTable(
+  'auth_tokens',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    tokenHash: text('token_hash').notNull(),
+    purpose: text('purpose').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    usedAt: timestamp('used_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex('auth_tokens_token_hash_key').on(table.tokenHash),
+    index('auth_tokens_user_purpose_idx').on(table.userId, table.purpose),
+    check('auth_tokens_purpose_check', sql`purpose in ('verify_email', 'reset_password')`),
+  ],
+);
+
 export const organizations = pgTable(
   'organizations',
   {
     id: uuid('id').defaultRandom().primaryKey(),
     name: text('name').notNull(),
     slug: text('slug').notNull(),
+    website: text('website'),
+    industry: text('industry'),
+    companySize: text('company_size'),
+    region: text('region'),
+    organizationType: text('organization_type'),
     createdAt: timestamp('created_at', { withTimezone: true })
       .defaultNow()
       .notNull(),
@@ -139,6 +165,17 @@ export const organizations = pgTable(
         where organization_memberships.organization_id = ${table.id}
           and organization_memberships.user_id = current_setting('vanguard.user_id', true)
       )`,
+    }),
+    pgPolicy('organizations_authenticated_insert', {
+      for: 'insert',
+      to: 'public',
+      withCheck: sql`current_setting('vanguard.user_id', true) <> ''`,
+    }),
+    pgPolicy('organizations_admin_update', {
+      for: 'update',
+      to: 'public',
+      using: sql`${table.id}::text = current_setting('vanguard.organization_id', true) and exists (select 1 from organization_memberships m where m.organization_id = ${table.id} and m.user_id = current_setting('vanguard.user_id', true) and m.role in ('owner', 'admin'))`,
+      withCheck: sql`${table.id}::text = current_setting('vanguard.organization_id', true) and exists (select 1 from organization_memberships m where m.organization_id = ${table.id} and m.user_id = current_setting('vanguard.user_id', true) and m.role in ('owner', 'admin'))`,
     }),
   ],
 ).enableRLS();
@@ -169,6 +206,16 @@ export const organizationMemberships = pgTable(
       to: 'public',
       using: sql`${table.userId} = current_setting('vanguard.user_id', true)`,
     }),
+    pgPolicy('organization_memberships_org_read', {
+      for: 'select',
+      to: 'public',
+      using: sql`${table.organizationId}::text = current_setting('vanguard.organization_id', true) and public.vanguard_is_org_member(${table.organizationId})`,
+    }),
+    pgPolicy('organization_memberships_owner_insert', {
+      for: 'insert',
+      to: 'public',
+      withCheck: sql`${table.userId} = current_setting('vanguard.user_id', true) and ${table.role} = 'owner'`,
+    }),
   ],
 ).enableRLS();
 
@@ -188,6 +235,10 @@ export const workspaces = pgTable(
   (table) => [
     uniqueIndex('workspaces_org_id_id_key').on(table.organizationId, table.id),
     uniqueIndex('workspaces_org_slug_key').on(table.organizationId, table.slug),
+    pgPolicy('workspaces_member_insert', {
+      for: 'insert', to: 'public',
+      withCheck: sql`${table.organizationId}::text = current_setting('vanguard.organization_id', true) and exists (select 1 from organization_memberships m where m.organization_id = ${table.organizationId} and m.user_id = current_setting('vanguard.user_id', true) and m.role in ('owner', 'admin'))`,
+    }),
     tenantPolicy('workspaces_tenant_isolation', table.organizationId),
   ],
 ).enableRLS();

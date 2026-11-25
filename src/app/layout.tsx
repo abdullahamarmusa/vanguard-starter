@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import '@fontsource-variable/ibm-plex-sans';
+import '@fontsource-variable/plus-jakarta-sans';
+import '@fontsource-variable/inter-tight';
+import '@fontsource-variable/jetbrains-mono';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -31,7 +33,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body className="bg-app text-text-primary min-h-screen font-sans antialiased">
         {children}
       </body>

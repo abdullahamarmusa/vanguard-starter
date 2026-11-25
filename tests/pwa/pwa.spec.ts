@@ -59,6 +59,7 @@ test('shows a static offline fallback for a navigation when disconnected', async
     page.getByRole('heading', { name: 'You’re offline' }),
   ).toBeVisible();
   await expect(
-    page.getByText('Your account data is never stored for offline use.'),
+    page.getByText('no account or workspace data.'),
   ).toBeVisible();
+  await context.setOffline(false);
 });

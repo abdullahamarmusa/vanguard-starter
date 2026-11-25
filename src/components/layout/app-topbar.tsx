@@ -7,12 +7,10 @@ import {
   ChevronDown,
   FlaskConical,
   Menu,
-  Moon,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
   Settings,
-  Sun,
   ToggleLeft,
   ToggleRight,
 } from 'lucide-react';
@@ -23,8 +21,6 @@ export function AppTopbar() {
   const {
     user,
     activeOrg,
-    theme,
-    toggleTheme,
     sidebarCollapsed,
     setSidebarCollapsed,
     setMobileNavOpen,
@@ -107,21 +103,6 @@ export function AppTopbar() {
           )}
         </button>
 
-        {/* Theme toggle */}
-        <button
-          type="button"
-          onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-          title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}
-          className="rounded-btn border-border-subtle bg-surface text-text-secondary hover:bg-hover hover:text-text-primary inline-flex h-9 w-9 items-center justify-center border transition-colors"
-        >
-          {theme === 'dark' ? (
-            <Sun className="h-4 w-4" />
-          ) : (
-            <Moon className="h-4 w-4" />
-          )}
-        </button>
-
         {/* Notifications */}
         <button
           type="button"
@@ -201,7 +182,7 @@ export function AppTopbar() {
                 </div>
                 <div className="border-border-subtle mt-1.5 border-t px-2.5 pt-2">
                   <p className="text-text-disabled text-[10px] leading-relaxed">
-                    Prototype account · Auth.js session is not configured yet.
+                    Public prototype preview · no account is required.
                   </p>
                 </div>
               </div>
